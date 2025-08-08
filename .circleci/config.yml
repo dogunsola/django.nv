@@ -35,6 +35,7 @@ jobs:
       - store_artifacts:
           path: snyk-results.json
           destination: snyk-artifact
+          when: always
 
   integration:
     docker:
@@ -45,6 +46,7 @@ jobs:
           command: |
             echo "This is an integration step"
             exit 1
+          when: on_fail
 
   prod:
     docker:
