@@ -53,16 +53,19 @@ jobs:
     runs-on: ubuntu-22.04
     needs: test
     steps:
-      - run: |
-           docker pull hysnsec/zap:2.16.1
-           docker run --user root --rm -v $(pwd):/zap/wrk:rw -w /zap hysnsec/zap:2.16.1 zap-baseline.py -t ${{ secrets.PROD_URL }} -J zap-output.json
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.4.0
+        with:
+          token: ${{ secrets.TOKEN }}
+          docker_name: 'hysnsec/zap:2.16.1'
+          target: ${{ secrets.PROD_URL }}
         continue-on-error: true
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ZAP Scan
-          path: zap-output.json
-        if: always()        # what is this for?
 
   prod:
     runs-on: ubuntu-22.04
